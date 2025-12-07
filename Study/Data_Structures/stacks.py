@@ -33,7 +33,7 @@ class Node:
         self.data = data 
         self.next = None
 
-class StackLinkedList: #array based stack
+class StackLinkedList: #linkedlist based stack
     def __init__(self):
         self.head=None
         self.length=0
