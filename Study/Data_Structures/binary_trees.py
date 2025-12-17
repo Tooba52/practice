@@ -89,28 +89,120 @@ class TreeNode:
 
     #Insert - No ordering property for binary tree
     def insert_bt(self,value):
-        pass
+        queue = [self] #start at root
+
+        while queue: #while there are still nodes in the queue to print
+            node = queue.pop(0) #remove the node in the queue and store
+
+        if node.left == None: # if left child empty → insert
+            node.left = TreeNode(value)
+            return
+
+        if node.right == None: # if right child empty → insert
+            node.right = TreeNode(value)
+            return
+            
 
 
     #Delete - No ordering property for binary tree
+    def delete_bt(self,target):
+        queue = [self]
+        node_to_delete = None
+        last = None
 
+        while queue: #loop through to find the node to delete
+            last = queue.pop(0)
+
+            if last.value == target: #if we find node to delete update variable
+                node_to_delete = last
+
+            if last.left: #if there is a left subtree add the node to the queue
+                queue.append(last.left)
+
+            if last.right: #if there is a right subtree add the node to the queue
+                queue.append(last.right)
+
+
+        if node_to_delete: #if we found the node to delete remove it 
+            node_to_delete.value = last.value
+            last.value = None
+
+
+    def search_bst(self, target):
+        if self.value == target: #if we find the value return True
+            return True
+
+        if target < self.value: #if the value is less then the nodes value then we move left
+            if self.left: #check if subtree exists, then recursively search it
+                return self.left.search_bst(target)
+            else:
+                return False
+        else:  #if it is greater then we move right
+            if self.right: #check if subtree exists, then recursively search it
+                return self.right.search_bst(target)
+            else:
+                return False
+            
+
+    def insert_bst(self,value):
+        if value < self.value: # if the value is smaller then the nodes value move left
+            if self.left: #check if subtree exists, then recursively move through till we find an empty space and insert
+                self.left.insert_bst(value)
+            else:
+                self.left = TreeNode(value)
+        elif value > self.value: #if it is greater then we move right
+            if self.right: #check if subtree exists, then recursively move through till we find an empty space and insert
+                self.right.insert_bst(value)
+            else:
+                self.right = TreeNode(value)
+        
+
+    def find_min(self): #helper function to find the minimum value node in a subtree 
+        current = self
+        while current.left:
+            current = current.left
+        return current
+    
+
+    def delete_bst(self, value): # 3 cases
+        if value < self.value: # if the value is smaller then the nodes value move left
+            if self.left: #check if subtree exists, then recursively move through it
+                self.left = self.left.delete_bst(value)
+        elif value > self.value: #if it is greater then we move right
+            if self.right: #check if subtree exists, then recursively move through it
+                self.right = self.right.delete_bst(value)
+
+        else: # node to delete is found
+
+            # Case 1: No children
+            if not self.left and not self.right:
+                return None
+
+            # Case 2: One child
+            if not self.left:
+                return self.right
+            if not self.right:
+                return self.left
+
+            # Case 3: Two children
+            # Find inorder successor (smallest in right subtree)
+            successor = self.right.find_min()
+            self.value = successor.value
+            self.right = self.right.delete_bst(successor.value)
+
+        return self
 
 
 
 # Create nodes
 root = TreeNode(5)
-root.left = TreeNode(3)
-root.right = TreeNode(7)
-root.left.left = TreeNode(2)
-root.left.right = TreeNode(4)
-root.right.right = TreeNode(8)
+for v in [3, 7, 2, 4, 8]:
+    root.insert_bst(v)
+print(root.search_bst(4))  
+print(root.search_bst(10)) 
+root.insert_bst(6)
+print(root.inorder())
+root.delete_bst(3)
+print(root.inorder())
 
-# root.preorder()
-# root.inorder()
-# root.postorder()
-# root.levelorder()
-print(root.height())
-print(root.count_nodes())
-print(root.count_leaves())
-print(root.search_bt(7))
-print(root.search_bt(9))
+
